@@ -8,6 +8,14 @@
     filter: brightness(0.9);
 }
 
-.centered-text{
+.game-layout{
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 20px;
+    padding: 20px;
+    align-items: start;
+}
+
+.game-area{
     text-align: center;
 }

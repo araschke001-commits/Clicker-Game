@@ -1,5 +1,5 @@
 const button = document.getElementById('click-button');
-const clickCount = document.getElementById('click-count');
+const count = document.getElementById('click-count');
 
 let money = 0;
 

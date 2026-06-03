@@ -1,1 +1,13 @@
+#click-button{
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
 
+#click-button:hover{
+    filter: brightness(0.9);
+}
+
+.centered-text{
+    text-align: center;
+}

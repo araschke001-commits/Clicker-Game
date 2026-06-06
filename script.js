@@ -16,6 +16,9 @@ const shopItems = [
     }
 ];
 
+const shopContainer = document.getElementById('shop-items');
+let itemsOwned = [];
+
 let money = 0;
 
 function createShopItems(){
@@ -57,15 +60,45 @@ function buyItem(itemName){
         if(itemInArray){
             itemInArray.amount++;
             console.log(`Found ${item.name}, added 1!`);
+            amount = itemInArray.amount;
+        } else {
+            itemsOwned.push({name: item.name, amount: 1});
+            console.log(`Added ${item.name} to itemsOwned!`);
         }
+
+        // Increase the cost of the item each time you buy it
+        item.cost = item.startCost + item.startCost * amount ** 2;
+        createShopItems(); // Redraw the shop with new prices
+
+        console.log(`Bought ${item.name}!`);
+    } else {
+        console.log(`Not enough clicks! Need ${item.cost}`);
     }
 }
 
+setInterval(() => {
+    // For every eagle we own, we need to click the button
+    const eagleOwned = itemsOwned.find((i) => i.name === "Bald Eagle");
+    if(eagleOwned){
+        for(let i = 0; i < eagleOwned.amount; i++){
+            buttonClick();
+        }
+    }
+}, 1000);
+
 function buttonClick(){
-    money++;
+    console.log('Button clicked!');
+
+    const multiplierOwned = itemsOwned.find((i) => i.name === "Trump");
+    const multiplierCount = multiplierOwned ? multiplierOwned.amount : 0;
+
+    money = money + 1 * 2 ** multiplierCount;
 
     count.textContent = money;
 }
+
+// Initialize shop items on page load
+createShopItems();
 
 //Main click handler
 button.addEventListener('click', function () {

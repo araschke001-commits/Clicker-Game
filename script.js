@@ -97,9 +97,8 @@ setInterval(() => {
     // For every eagle we own, we need to click the button
     const eagle = shopItems.find((i) => i.name === "Bald Eagle");
     if(eagle && eagle.amount){
-        for(let i = 0; i < eagle.amount; i++){
-            buttonClick();
-        }
+        money += eagle.amount;
+        count.textContent = money;
     }
 }, 1000);
 

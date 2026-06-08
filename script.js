@@ -10,7 +10,7 @@ const shopItems = [
         amount: 0
     },
     {
-        name: "America Flag",
+        name: "American Flag",
         description: "The U.S. flag, doubles your click value.",
         cost: 20,
         startCost: 20,
@@ -43,6 +43,7 @@ const shopContainer = document.getElementById('shop-items');
 
 let money = 0;
 
+// Refreshes the shop display with current items and their costs
 function createShopItems(){
     // Clear old shop items
     document.querySelectorAll('.shop-item').forEach((element) => {
@@ -68,6 +69,7 @@ function createShopItems(){
     });
 }
 
+// Handles buying items from the shop
 function buyItem(itemName){
     const item = shopItems.find((i) => i.name === itemName);
     if(!item) return console.error('Item not found', itemName);
@@ -90,6 +92,7 @@ function buyItem(itemName){
     }
 }
 
+// Adds money every second based on the number of eagles the user has
 setInterval(() => {
     // For every eagle we own, we need to click the button
     const eagle = shopItems.find((i) => i.name === "Bald Eagle");
@@ -100,10 +103,38 @@ setInterval(() => {
     }
 }, 1000);
 
+// Update the approval bar based on current shop items
+function updateApprovalBar(){
+    const bar = document.getElementById('approval-bar');
+    const crowdSupport = shopItems.find((i) => i.name === "Crowd Support");
+    const war = shopItems.find((i) => i.name === "War");
+
+    let approval = 0;
+    if(crowdSupport) approval += (crowdSupport.amount || 0) * 5;
+    if(war) approval -= (war.amount || 0) * 10;
+
+    // Clamp approval between 0 and 100
+    approval = Math.max(0, Math.min(100, approval));
+
+    bar.style.width = `${approval}%`;
+
+    // Change color based on approval
+    const startColor = rgb(255, 0, 0); // Red
+    const endColor = rgb(0, 255, 0);
+
+    const t = approval / 100;
+    const r = Math.round(lerp(startColor.r, endColor.r, t));
+    const g = Math.round(lerp(startColor.g, endColor.g, t));
+    const b = Math.round(lerp(startColor.b, endColor.b, t));
+    
+    bar.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+}
+
+// Handles button clicks, factoring in multipliers from shop items
 function buttonClick(){
     console.log('Button clicked!');
 
-    const multiplierItem = shopItems.find((i) => i.name === "Trump");
+    const multiplierItem = shopItems.find((i) => i.name === "American Flag");
     const multiplierCount = multiplierItem ? multiplierItem.amount : 0;
 
     money = money + 1 * 2 ** multiplierCount;

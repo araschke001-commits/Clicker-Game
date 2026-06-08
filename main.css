@@ -20,6 +20,22 @@
     text-align: center;
 }
 
+.approval-bar-container{
+    width: 200px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+#approval-bar{
+    height: 100%;
+    background-color: rgb(0, 128, 0);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
 .shop-item{
     display: grid;
     grid-template-columns: 1fr auto;

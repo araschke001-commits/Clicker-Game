@@ -11,7 +11,7 @@ const shopItems = [
     },
     {
         name: "American Flag",
-        description: "The U.S. flag, doubles your click value.",
+        description: "The U.S. flag, increases your click value.",
         cost: 20,
         startCost: 20,
         amount: 0
@@ -25,14 +25,14 @@ const shopItems = [
     },
     {
         name: "War",
-        description: "Engage in a war, increases your money gain by 50% but decreases your approval rating by 10%.",
+        description: "Engage in a war, increases your money gain by 50% but decreases your approval rating by 25%.",
         cost: 200,
         startCost: 200,
         amount: 0
     },
     {
         name: "Re-election",
-        description: "Resets your money to 0 but gives you a permanent 10% boost to all your clicks and earnings.",
+        description: "Resets your money and upgrades but gives you a permanent 10% boost to all your clicks and earnings.",
         cost: 1000,
         startCost: 1000,
         amount: 0
@@ -81,6 +81,19 @@ function buyItem(itemName){
         // Track amount directly on the shop item
         item.amount = (item.amount || 0) + 1;
         const amount = item.amount;
+
+        // Handle special cases
+        switch(item.name){
+            case "Re-election":
+                // Reset money but give a permanent boost
+                money = 0;
+                shopItems.forEach((i) => {
+                    if(i.name !== "Re-election"){
+                        i.startCost = Math.round(i.startCost * 1.1);
+                    }
+                });
+                break;
+        }
 
         // Increase the cost of the item each time you buy it
         item.cost = item.startCost + item.startCost * amount ** 2;
@@ -136,9 +149,14 @@ function buttonClick(){
 
     const multiplierItem = shopItems.find((i) => i.name === "American Flag");
     const multiplierCount = multiplierItem ? multiplierItem.amount : 0;
+    
+    const clickValue = 1; // Base click value, can be modified by shop items
+    const switchTime = 10; // The amount of time before the function switches from quadratic to sqrt growth in click value.
+    const multiplier = 2; // The amount to increase the sqrt growth by after we switch
 
-    money = money + 1 * 2 ** multiplierCount;
+    (multiplierCount > switchTime) ? clickValue = 1 + multiplier * Math.sqrt(multiplierCount - switchTime) + Math.pow(switchTime, 2) : clickValue = 1 + Math.pow(multiplierCount, 2); //Click value increases quadratically until we have 10 flags, then it increases with the square root of the amount of flags we have after that. This is to prevent the click value from becoming too high and unbalanced.
 
+    money = money + clickValue; //Increases click value using a sigmoid function for balancing
     count.textContent = money;
 }
 

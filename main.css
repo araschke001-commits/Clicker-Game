@@ -1,9 +1,16 @@
 .header{
     text-align: center;
     margin: 0;
+    grid-column: 1 / -1;
+}
+
+#money-display{
+    font-size: 1.2em;
+    color: black;
 }
 
 #click-button{
+    width: 300px;
     background: transparent;
     border: none;
     cursor: pointer;

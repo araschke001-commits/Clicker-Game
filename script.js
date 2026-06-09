@@ -85,6 +85,7 @@ function buyItem(itemName){
         // Increase the cost of the item each time you buy it
         item.cost = item.startCost + item.startCost * amount ** 2;
         createShopItems(); // Redraw the shop with new prices
+        updateApprovalBar(); // Update approval bar in case we bought something that affects it
 
         console.log(`Bought ${item.name}!`);
     } else {
@@ -141,8 +142,9 @@ function buttonClick(){
     count.textContent = money;
 }
 
-// Initialize shop items on page load
+// Initialize shop items & approval bar on page load
 createShopItems();
+updateApprovalBar();
 
 // Main click handler
 button.addEventListener('click', function () {

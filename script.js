@@ -134,8 +134,13 @@ function buyItem(itemName){
 function startWarCountdown(seconds){
     if(warActive) return;
 
+    const warButton = shopContainer.querySelector(`.shop-item button[onclick="buyItem('War')"]`);
+
     warActive = true;
     warRemainingSeconds = seconds;
+
+    warButton.disabled = true;
+
     console.log(`War engaged! War purchase button disabled for ${seconds} seconds.`);
 
     warIntervalId = setInterval(() => {

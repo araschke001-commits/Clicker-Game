@@ -25,7 +25,7 @@ const shopItems = [
     },
     {
         name: "War",
-        description: "Engage in a war, has a 50% chance of doubling your money upon win but decreases your approval rating and money by 50% upon loss.",
+        description: "Engage in a war, has a 50% chance of doubling your money and increasing your approval rating upon win but halves your approval rating and money upon loss.",
         cost: 200,
         startCost: 200,
         amount: 0
@@ -42,8 +42,10 @@ const shopItems = [
 const shopContainer = document.getElementById('shop-items');
 
 let money = 0;
+let approval = 0;
+
 // Initialize displayed money
-count.textContent = money;
+updateMoney();
 
 let boost = 1; // Global boost multiplier from re-elections
 
@@ -89,8 +91,7 @@ function buyItem(itemName){
     }
 
     if(money >= item.cost){
-        money -= item.cost;
-        count.textContent = money;
+        updateMoney(-item.cost); // Deduct cost from money
 
         // Track amount directly on the shop item
         item.amount = (item.amount || 0) + 1;
@@ -98,12 +99,17 @@ function buyItem(itemName){
 
         // Handle special cases
         switch(item.name){
+            case "Crowd Support":
+                approval += 5; // Each purchase increases approval by 5%
+                break;
             case "War":
                 startWarCountdown(60);
                 break;
             case "Re-election":
-                // Reset money but give a permanent boost
-                money = 0;
+                // Reset money and approval but give a permanent boost
+                approval = 0;
+                updateMoney(-money); // Reset money display
+
                 shopItems.forEach((i) => {
                     if(i.name !== "Re-election"){
                         i.amount = 0;
@@ -145,13 +151,14 @@ function startWarCountdown(seconds){
 
 function resolveWarOutcome(){
     if(Math.random() < 0.5){
-        money *= 2;
-        count.textContent = money;
+        updateMoney(money); // Double money
+        updateApprovalBar(20); // Increase approval by 20%
         console.log('War ended: you won and your money doubled!');
     } else {
         warLosses += 1;
+        updateMoney(-money / 2);
+        updateApprovalBar(-20);
         console.log('War ended: you lost and approval dropped!');
-        updateApprovalBar();
     }
 
     createShopItems();
@@ -162,20 +169,13 @@ setInterval(() => {
     // For every eagle we own, we need to click the button
     const eagle = shopItems.find((i) => i.name === "Bald Eagle");
     if(eagle && eagle.amount){
-        money += eagle.amount * boost; // Each eagle gives 1 money per second, multiplied by the boost from re-elections
-        count.textContent = money;
+        updateMoney(eagle.amount * boost);
     }
 }, 1000);
 
 // Update the approval bar based on current shop items
-function updateApprovalBar(){
+function updateApprovalBar(change = 0){
     const bar = document.getElementById('approval-bar');
-    const crowdSupport = shopItems.find((i) => i.name === "Crowd Support");
-    const war = shopItems.find((i) => i.name === "War");
-
-    let approval = 0;
-    if(crowdSupport) approval += (crowdSupport.amount || 0) * 5;
-    approval -= warLosses * 50;
 
     // Clamp approval between 0 and 100
     approval = Math.max(0, Math.min(100, approval));
@@ -205,18 +205,22 @@ function buttonClick(){
     console.log('Button clicked!');
 
     const multiplierItem = shopItems.find((i) => i.name === "American Flag");
-    const multiplierCount = multiplierItem ? multiplierItem.amount : 0;
+    const multiplierCount = (multiplierItem ? multiplierItem.amount : 0) + 1; // +1 for smoother growth (from 1 to 2 rather than 1, 1, 4)
     
     let clickValue = 1; // Base click value, can be modified by shop items
     const switchTime = 10; // The amount of time before the function switches from quadratic to sqrt growth in click value.
     const multiplier = 2; // The amount to increase the sqrt growth by after we switch
 
-    (multiplierCount > switchTime) ? clickValue = multiplier * Math.sqrt(multiplierCount - switchTime) + Math.pow(switchTime, 2) : clickValue = Math.pow(multiplierCount, 2); //Click value increases quadratically until we have 10 flags, then it increases with the square root of the amount of flags we have after that. This is to prevent the click value from becoming too high and unbalanced.
+    (multiplierCount > switchTime) ? clickValue = multiplier * (multiplierCount - switchTime) + Math.pow(switchTime, 2) : clickValue = Math.pow(multiplierCount, 2); //Click value increases quadratically until we have 10 flags, then it increases with the square root of the amount of flags we have after that. This is to prevent the click value from becoming too high and unbalanced.
 
     clickValue = Math.max(1, Math.round(clickValue) * boost); //Round click value to nearest integer for cleaner display
 
-    money += clickValue;
-    count.textContent = money;
+    updateMoney(clickValue);
+}
+
+function updateMoney(change = 0){
+    money += change;
+    count.textContent = Math.round(money * 100) / 100; // Round to 2 decimal places for cleaner display
 }
 
 // Initialize shop items & approval bar on page load

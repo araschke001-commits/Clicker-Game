@@ -213,7 +213,7 @@ function buttonClick(){
 
     (multiplierCount > switchTime) ? clickValue = multiplier * Math.sqrt(multiplierCount - switchTime) + Math.pow(switchTime, 2) : clickValue = Math.pow(multiplierCount, 2); //Click value increases quadratically until we have 10 flags, then it increases with the square root of the amount of flags we have after that. This is to prevent the click value from becoming too high and unbalanced.
 
-    clickValue = Math.round(clickValue) * boost; //Round click value to nearest integer for cleaner display
+    clickValue = Math.max(1, Math.round(clickValue) * boost); //Round click value to nearest integer for cleaner display
 
     money += clickValue;
     count.textContent = money;

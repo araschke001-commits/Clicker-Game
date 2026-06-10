@@ -198,6 +198,9 @@ function updateApprovalBar(change = 0){
     const b = Math.round(lerp(startColor.b, endColor.b, t));
 
     bar.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+    
+    const container = document.querySelector('.approval-bar-container');
+    if (container) container.setAttribute('data-approval', `${approval}%`);
 }
 
 // Helper: linear interpolation

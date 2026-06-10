@@ -198,7 +198,7 @@ function updateApprovalBar(change = 0){
     const b = Math.round(lerp(startColor.b, endColor.b, t));
 
     bar.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
-    
+
     const container = document.querySelector('.approval-bar-container');
     if (container) container.setAttribute('data-approval', `${approval}%`);
 }
@@ -216,10 +216,11 @@ function buttonClick(){
     const multiplierCount = (multiplierItem ? multiplierItem.amount : 0) + 1; // +1 for smoother growth (from 1 to 2 rather than 1, 1, 4)
     
     let clickValue = 1; // Base click value, can be modified by shop items
-    const switchTime = 10; // The amount of time before the function switches from quadratic to sqrt growth in click value.
-    const multiplier = 2; // The amount to increase the sqrt growth by after we switch
+    const switchTime = 20; // The amount of time before the function switches from quadratic to linear growth in click value.
+    const linearMultiplier = 2; // The amount to scale the linear growth by after we switch
+    const quadraticMultiplier = 0.5; // The amount to scale the quadratic growth by before we switch
 
-    (multiplierCount > switchTime) ? clickValue = multiplier * (multiplierCount - switchTime) + Math.pow(switchTime, 2) : clickValue = Math.pow(multiplierCount, 2); //Click value increases quadratically until we have 10 flags, then it increases with the square root of the amount of flags we have after that. This is to prevent the click value from becoming too high and unbalanced.
+    (multiplierCount > switchTime) ? clickValue = linearMultiplier * (multiplierCount - switchTime) + Math.pow(switchTime, 2) : clickValue = quadraticMultiplier * Math.pow(multiplierCount, 2); // Quadratic growth for a while, and then linear growth for balancing
 
     clickValue = Math.max(1, Math.round(clickValue) * boost); //Round click value to nearest integer for cleaner display
 

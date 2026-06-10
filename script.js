@@ -25,7 +25,7 @@ const shopItems = [
     },
     {
         name: "War",
-        description: "Engage in a war, increases your money gain by 50% but decreases your approval rating by 25%.",
+        description: "Engage in a war, has a 50% chance of doubling your money upon win but decreases your approval rating and money by 50% upon loss.",
         cost: 200,
         startCost: 200,
         amount: 0
@@ -42,6 +42,15 @@ const shopItems = [
 const shopContainer = document.getElementById('shop-items');
 
 let money = 0;
+// Initialize displayed money
+count.textContent = money;
+
+let boost = 1; // Global boost multiplier from re-elections
+
+let warActive = false;
+let warRemainingSeconds = 0;
+let warLosses = 0;
+let warIntervalId = null;
 
 // Refreshes the shop display with current items and their costs
 function createShopItems(){
@@ -60,8 +69,8 @@ function createShopItems(){
                 <h3>${item.name} ${item.amount ? `(${item.amount})` : ''}</h3>
                 <p>${item.description}</p>
             </div>
-            <button onclick="buyItem('${item.name}')">
-                Buy $${item.cost}
+            <button onclick="buyItem('${item.name}')" ${item.name === 'War' && warActive ? 'disabled' : ''}>
+                ${item.name === 'War' && warActive ? 'War in progress' : `Buy $${item.cost}`}
             </button>
         `;
 
@@ -74,6 +83,11 @@ function buyItem(itemName){
     const item = shopItems.find((i) => i.name === itemName);
     if(!item) return console.error('Item not found', itemName);
 
+    if (item.name === "War" && warActive) {
+        console.log('War already in progress! Wait until it ends before engaging again.');
+        return;
+    }
+
     if(money >= item.cost){
         money -= item.cost;
         count.textContent = money;
@@ -84,12 +98,17 @@ function buyItem(itemName){
 
         // Handle special cases
         switch(item.name){
+            case "War":
+                startWarCountdown(60);
+                break;
             case "Re-election":
                 // Reset money but give a permanent boost
                 money = 0;
                 shopItems.forEach((i) => {
                     if(i.name !== "Re-election"){
-                        i.startCost = Math.round(i.startCost * 1.1);
+                        i.amount = 0;
+                        i.cost = i.startCost;
+                        boost = 1.1 * boost;
                     }
                 });
                 break;
@@ -106,12 +125,44 @@ function buyItem(itemName){
     }
 }
 
+function startWarCountdown(seconds){
+    if(warActive) return;
+
+    warActive = true;
+    warRemainingSeconds = seconds;
+    console.log(`War engaged! War purchase button disabled for ${seconds} seconds.`);
+
+    warIntervalId = setInterval(() => {
+        warRemainingSeconds -= 1;
+
+        if(warRemainingSeconds <= 0){
+            clearInterval(warIntervalId);
+            warActive = false;
+            resolveWarOutcome();
+        }
+    }, 1000);
+}
+
+function resolveWarOutcome(){
+    if(Math.random() < 0.5){
+        money *= 2;
+        count.textContent = money;
+        console.log('War ended: you won and your money doubled!');
+    } else {
+        warLosses += 1;
+        console.log('War ended: you lost and approval dropped!');
+        updateApprovalBar();
+    }
+
+    createShopItems();
+}
+
 // Adds money every second based on the number of eagles the user has
 setInterval(() => {
     // For every eagle we own, we need to click the button
     const eagle = shopItems.find((i) => i.name === "Bald Eagle");
     if(eagle && eagle.amount){
-        money += eagle.amount;
+        money += eagle.amount * boost; // Each eagle gives 1 money per second, multiplied by the boost from re-elections
         count.textContent = money;
     }
 }, 1000);
@@ -124,7 +175,7 @@ function updateApprovalBar(){
 
     let approval = 0;
     if(crowdSupport) approval += (crowdSupport.amount || 0) * 5;
-    if(war) approval -= (war.amount || 0) * 10;
+    approval -= warLosses * 50;
 
     // Clamp approval between 0 and 100
     approval = Math.max(0, Math.min(100, approval));
@@ -132,15 +183,21 @@ function updateApprovalBar(){
     bar.style.width = `${approval}%`;
 
     // Change color based on approval
-    const startColor = rgb(255, 0, 0); // Red
-    const endColor = rgb(0, 255, 0);
+    // Simple color interpolation between red and green
+    const startColor = { r: 255, g: 0, b: 0 }; // Red
+    const endColor = { r: 0, g: 255, b: 0 };
 
     const t = approval / 100;
     const r = Math.round(lerp(startColor.r, endColor.r, t));
     const g = Math.round(lerp(startColor.g, endColor.g, t));
     const b = Math.round(lerp(startColor.b, endColor.b, t));
-    
+
     bar.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+}
+
+// Helper: linear interpolation
+function lerp(a, b, t){
+    return a + (b - a) * t;
 }
 
 // Handles button clicks, factoring in multipliers from shop items
@@ -150,13 +207,15 @@ function buttonClick(){
     const multiplierItem = shopItems.find((i) => i.name === "American Flag");
     const multiplierCount = multiplierItem ? multiplierItem.amount : 0;
     
-    const clickValue = 1; // Base click value, can be modified by shop items
+    let clickValue = 1; // Base click value, can be modified by shop items
     const switchTime = 10; // The amount of time before the function switches from quadratic to sqrt growth in click value.
     const multiplier = 2; // The amount to increase the sqrt growth by after we switch
 
-    (multiplierCount > switchTime) ? clickValue = 1 + multiplier * Math.sqrt(multiplierCount - switchTime) + Math.pow(switchTime, 2) : clickValue = 1 + Math.pow(multiplierCount, 2); //Click value increases quadratically until we have 10 flags, then it increases with the square root of the amount of flags we have after that. This is to prevent the click value from becoming too high and unbalanced.
+    (multiplierCount > switchTime) ? clickValue = multiplier * Math.sqrt(multiplierCount - switchTime) + Math.pow(switchTime, 2) : clickValue = Math.pow(multiplierCount, 2); //Click value increases quadratically until we have 10 flags, then it increases with the square root of the amount of flags we have after that. This is to prevent the click value from becoming too high and unbalanced.
 
-    money = money + clickValue; //Increases click value using a sigmoid function for balancing
+    clickValue = Math.round(clickValue) * boost; //Round click value to nearest integer for cleaner display
+
+    money += clickValue;
     count.textContent = money;
 }
 

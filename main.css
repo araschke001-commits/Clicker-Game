@@ -10,7 +10,8 @@
 }
 
 #click-button{
-    width: 300px;
+    width: 400px;
+    height: 300px;
     background: transparent;
     border: none;
     cursor: pointer;

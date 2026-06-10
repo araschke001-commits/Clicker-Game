@@ -8,22 +8,26 @@
 
   <body>
     <main class="game-layout">
-      <h1 class="header">America Clicker</h1>
-      <p class="header" id="money-display">Money: $<span id="click-count">0</span></p>
-
-      <div class="stats-container">
-        <p>Approval Rating:</p>
-        <div class="approval-bar-container">
-          <div id="approval-bar"></div>
-        </div>
+      <div class="header">
+        <h1>America Clicker</h1>
+        <p id="money-display">Money: $<span id="click-count">0</span></p>
       </div>
+      
+      <aside class="stats-panel">
+        <div class="approval-rating">
+          <p>Approval Rating:</p>
+          <div class="approval-bar-container">
+            <div id="approval-bar"></div>
+          </div>
+        </div>
+      </aside>
 
-      <aside class="stats-panel"></aside>
       <section class="game-area">
         <button id="click-button">
-          <img src="https://imgs.search.brave.com/du9JxxPzKaJgOXlBNyYHOeJU0lt1du4MnrIhKvZdI_o/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3N5c3RlbS9y/ZXNvdXJjZXMvdGh1/bWJuYWlscy8wNDUv/NjAyLzM2Mi9zbWFs/bC9hbWVyaWNhbi11/c2EtZmxhZy13YXZp/bmctdHJhbnNwYXJl/bnQtYmFja2dyb3Vu/ZC1mcmVlLXBuZy5w/bmc" alt="American Flag" width="400" />
+          <img src="https://imgs.search.brave.com/du9JxxPzKaJgOXlBNyYHOeJU0lt1du4MnrIhKvZdI_o/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3N5c3RlbS9y/ZXNvdXJjZXMvdGh1/bWJuYWlscy8wNDUv/NjAyLzM2Mi9zbWFs/bC9hbWVyaWNhbi11/c2EtZmxhZy13YXZp/bmctdHJhbnNwYXJl/bnQtYmFja2dyb3Vu/ZC1mcmVlLXBuZy5w/bmc" alt="American Flag" width="400" height="300" />
         </button>
       </section>
+      
       <aside class="shop-panel" id="shop-items"></aside>
     </main>
     

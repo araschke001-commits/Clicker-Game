@@ -45,9 +45,10 @@ const shopItems = [
 ];
 
 const shopContainer = document.getElementById('shop-items');
+const startApproval = 50;
 
 let money = 0;
-let approval = 50;
+let approval = startApproval;
 
 // Initialize displayed money
 updateMoney();
@@ -186,15 +187,15 @@ setInterval(() => {
     }
 
     // Decrease approval slightly, more if in a war
-    
-
-    updateApprovalBar((warActive && warActive == true) ? -1 : -0.5);
+    updateApprovalBar((warActive == true) ? -1 : -0.5);
 }, 1000);
 
 // Update the approval bar based on current shop items
 function updateApprovalBar(change = 0){
     const bar = document.getElementById('approval-bar');
     const percent = document.getElementById('approval-percentage');
+
+    approval += change;
 
     // Clamp approval between 0 and 100
     approval = Math.max(0, Math.min(100, approval));

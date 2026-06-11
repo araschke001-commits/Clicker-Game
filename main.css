@@ -25,12 +25,13 @@
         padding: 15px;
 
         .approval-bar-container{
+            position: relative;
             width: 100px;
             height: 20px;
             background-color: rgba(255, 255, 255, 0.4);
             border-radius: 10px;
             border: 2px solid rgb(75, 75, 75);
-            overflow: hidden;
+            overflow: visible;
             margin-top: 10px;
             
             #approval-bar{
@@ -41,22 +42,15 @@
             }
             
             #approval-percentage{
-                position: relative; /* allow absolutely positioned percentage */
-                padding-right: 70px; /* space for the percentage display to the right */
-
-                &::after{
-                    content: attr(data-approval);
-                    position: absolute;
-                    right: 10px;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    font-weight: 700;
-                    color: black;
-                    white-space: nowrap;
-                }
-
+                position: absolute;
+                right: 5px;
+                top: 50%;
+                transform: translateY(-50%);
                 font-size: 1em;
                 color: black;
+                font-weight: 700;
+                margin: 0;
+                white-space: nowrap;
             }
         }
     }

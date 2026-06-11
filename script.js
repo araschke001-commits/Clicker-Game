@@ -47,7 +47,7 @@ const shopItems = [
 const shopContainer = document.getElementById('shop-items');
 
 let money = 0;
-let approval = 0;
+let approval = 50;
 
 // Initialize displayed money
 updateMoney();
@@ -174,16 +174,19 @@ function resolveWarOutcome(){
     createShopItems();
 }
 
-// Adds money every second based on the number of eagles the user has
+// Adds money every second based on the number of eagles the user has & decrease approval slightly for being idle
 setInterval(() => {
     // For every eagle we own, we need to click the button
     const eagle = shopItems.find((i) => i.name === "Bald Eagle");
     if(eagle && eagle.amount){
         updateMoney(eagle.amount * boost);
-        
+
         // Refresh shop after passive income changes
         createShopItems();
     }
+
+    // Decrease approval slightly, more if in a war
+    (warActive && warActive == true) ? approval -= 1 : approval -= 0.5;
 }, 1000);
 
 // Update the approval bar based on current shop items
@@ -208,7 +211,7 @@ function updateApprovalBar(change = 0){
 
     bar.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
 
-    percent.textContent = approval;
+    percent.textContent = Math.round(approval);
 }
 
 // Helper: linear interpolation

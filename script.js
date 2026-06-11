@@ -7,35 +7,40 @@ const shopItems = [
         description: "Birds that give you money every second.",
         cost: 10,
         startCost: 10,
-        amount: 0
+        amount: 0,
+        exponent: 1.5
     },
     {
         name: "American Flag",
         description: "The U.S. flag, increases your click value.",
         cost: 20,
         startCost: 20,
-        amount: 0
+        amount: 0,
+        exponent: 2
     },
     {
         name: "Crowd Support",
         description: "Gains support of the people, increases your approval rating by 5%.",
         cost: 50,
         startCost: 50,
-        amount: 0
+        amount: 0,
+        exponent: 1
     },
     {
         name: "War",
         description: "Engage in a war, has a 50% chance of doubling your money and increasing your approval rating upon win but halves your approval rating and money upon loss.",
         cost: 200,
         startCost: 200,
-        amount: 0
+        amount: 0,
+        exponent: 2
     },
     {
         name: "Re-election",
         description: "Resets your money and upgrades but gives you a permanent 10% boost to all your clicks and earnings.",
         cost: 1000,
         startCost: 1000,
-        amount: 0
+        amount: 0,
+        exponent: 2
     }
 ];
 
@@ -109,19 +114,19 @@ function buyItem(itemName){
                 // Reset money and approval but give a permanent boost
                 approval = 0;
                 updateMoney(-money); // Reset money display
+                boost += 0.1;
 
                 shopItems.forEach((i) => {
                     if(i.name !== "Re-election"){
                         i.amount = 0;
                         i.cost = i.startCost;
-                        boost = 1.1 * boost;
                     }
                 });
                 break;
         }
 
         // Increase the cost of the item each time you buy it
-        item.cost = item.startCost + item.startCost * amount ** 2;
+        item.cost = Math.round(item.startCost + item.startCost * amount ** item.exponent);
         createShopItems(); // Redraw the shop with new prices
         updateApprovalBar(); // Update approval bar in case we bought something that affects it
 
@@ -181,6 +186,7 @@ setInterval(() => {
 // Update the approval bar based on current shop items
 function updateApprovalBar(change = 0){
     const bar = document.getElementById('approval-bar');
+    const percent = document.getElementById('approval-percentage');
 
     // Clamp approval between 0 and 100
     approval = Math.max(0, Math.min(100, approval));
@@ -199,8 +205,7 @@ function updateApprovalBar(change = 0){
 
     bar.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
 
-    const container = document.querySelector('.approval-bar-container');
-    if (container) container.setAttribute('data-approval', `${approval}%`);
+    percent.textContent = approval;
 }
 
 // Helper: linear interpolation
@@ -220,7 +225,7 @@ function buttonClick(){
     const linearMultiplier = 2; // The amount to scale the linear growth by after we switch
     const quadraticMultiplier = 0.5; // The amount to scale the quadratic growth by before we switch
 
-    (multiplierCount > switchTime) ? clickValue = linearMultiplier * (multiplierCount - switchTime) + Math.pow(switchTime, 2) : clickValue = quadraticMultiplier * Math.pow(multiplierCount, 2); // Quadratic growth for a while, and then linear growth for balancing
+    (multiplierCount > switchTime) ? clickValue = linearMultiplier * (multiplierCount - switchTime) + switchTime ** 2 : clickValue = quadraticMultiplier * Math.pow(multiplierCount, 2); // Quadratic growth for a while, and then linear growth for balancing
 
     clickValue = Math.max(1, Math.round(clickValue) * boost); //Round click value to nearest integer for cleaner display
 

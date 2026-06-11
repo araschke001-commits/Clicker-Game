@@ -24,7 +24,7 @@ const shopItems = [
         cost: 50,
         startCost: 50,
         amount: 0,
-        exponent: 1
+        exponent: 0.5
     },
     {
         name: "War",
@@ -113,7 +113,7 @@ function buyItem(itemName){
                 break;
             case "Re-election":
                 // Reset money and approval but give a permanent boost
-                approval = 0;
+                approval = startApproval;
                 updateMoney(-money); // Reset money display
                 boost += 0.1;
 
@@ -187,7 +187,7 @@ setInterval(() => {
     }
 
     // Decrease approval slightly, more if in a war
-    updateApprovalBar((warActive == true) ? -1 : -0.5);
+    updateApprovalBar((warActive == true) ? -0.5 : -0.25);
 }, 1000);
 
 // Update the approval bar based on current shop items

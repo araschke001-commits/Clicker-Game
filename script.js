@@ -180,6 +180,9 @@ setInterval(() => {
     const eagle = shopItems.find((i) => i.name === "Bald Eagle");
     if(eagle && eagle.amount){
         updateMoney(eagle.amount * boost);
+        
+        // Refresh shop after passive income changes
+        createShopItems();
     }
 }, 1000);
 
@@ -230,14 +233,14 @@ function buttonClick(){
     clickValue = Math.max(1, Math.round(clickValue) * boost); //Round click value to nearest integer for cleaner display
 
     updateMoney(clickValue);
+
+    // Refresh shop so buttons reflect the new money total after clicking
+    createShopItems();
 }
 
 function updateMoney(change = 0){
     money += change;
     count.textContent = Math.round(money * 100) / 100; // Round to 2 decimal places for cleaner display
-    
-    // Refresh shop so buttons enable/disable based on current funds
-    createShopItems();
 }
 
 // Initialize shop items & approval bar on page load

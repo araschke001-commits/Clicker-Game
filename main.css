@@ -55,7 +55,7 @@
                     white-space: nowrap;
                 }
 
-                font-size: 0.8em;
+                font-size: 1em;
                 color: black;
             }
         }
@@ -98,7 +98,7 @@
 
         .shop-item p{
             margin: 0;
-            font-size: 0.7em;
+            font-size: 0.8em;
             opacity: 0.8;
         }
 
@@ -113,9 +113,9 @@
         }
 
         .shop-item button:disabled{
-            background-color: rgb(100, 100, 100);
+            background-color: rgb(130, 130, 130);
             color: black;
-            border-color: rgb(50, 50, 50);
+            border-color: rgb(70, 70, 70);
             cursor: not-allowed;
         }
     }

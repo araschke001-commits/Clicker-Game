@@ -76,7 +76,7 @@ function createShopItems(){
                 <h3>${item.name} ${item.amount ? `(${item.amount})` : ''}</h3>
                 <p>${item.description}</p>
             </div>
-            <button onclick="buyItem('${item.name}')" ${item.name === 'War' && warActive ? 'disabled' : ''}>
+            <button onclick="buyItem('${item.name}')" ${(item.name === 'War' && warActive) || money < item.cost ? 'disabled' : ''}>
                 ${item.name === 'War' && warActive ? 'War in progress' : `Buy $${item.cost}`}
             </button>
         `;

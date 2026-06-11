@@ -235,6 +235,9 @@ function buttonClick(){
 function updateMoney(change = 0){
     money += change;
     count.textContent = Math.round(money * 100) / 100; // Round to 2 decimal places for cleaner display
+    
+    // Refresh shop so buttons enable/disable based on current funds
+    createShopItems();
 }
 
 // Initialize shop items & approval bar on page load

@@ -186,7 +186,9 @@ setInterval(() => {
     }
 
     // Decrease approval slightly, more if in a war
-    (warActive && warActive == true) ? approval -= 1 : approval -= 0.5;
+    
+
+    updateApprovalBar((warActive && warActive == true) ? -1 : -0.5);
 }, 1000);
 
 // Update the approval bar based on current shop items

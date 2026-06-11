@@ -103,7 +103,7 @@
         }
 
         .shop-item button{
-            background-color: bisque;
+            background-color: rgb(255, 186, 102);
             border: 2px solid rgb(155, 77, 0);
             border-radius: 5px;
             color: rgb(92, 46, 0);
@@ -113,7 +113,7 @@
         }
 
         .shop-item button:disabled{
-            background-color: rgb(130, 130, 130);
+            background-color: rgb(150, 150, 150);
             color: black;
             border-color: rgb(70, 70, 70);
             cursor: not-allowed;

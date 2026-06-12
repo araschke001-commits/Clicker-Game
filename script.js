@@ -36,7 +36,7 @@ const shopItems = [
     },
     {
         name: "Re-election",
-        description: "Resets your money and upgrades but gives you a permanent 10% boost to all your clicks and earnings.",
+        description: "Resets your money and upgrades but gives you a permanent 20% boost to all your clicks and earnings.",
         cost: 1000,
         startCost: 1000,
         amount: 0,
@@ -109,13 +109,13 @@ function buyItem(itemName){
                 approval += 5; // Each purchase increases approval by 5%
                 break;
             case "War":
-                startWarCountdown(60);
+                startWarCountdown(30);
                 break;
             case "Re-election":
                 // Reset money and approval but give a permanent boost
                 approval = startApproval;
                 updateMoney(-money); // Reset money display
-                boost += 0.1;
+                boost += 0.2;
 
                 shopItems.forEach((i) => {
                     if(i.name !== "Re-election"){

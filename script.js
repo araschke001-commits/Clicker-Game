@@ -180,7 +180,7 @@ setInterval(() => {
     // For every eagle we own, we need to click the button
     const eagle = shopItems.find((i) => i.name === "Bald Eagle");
     if(eagle && eagle.amount){
-        updateMoney(eagle.amount ** 2 * boost);
+        updateMoney(calculateValue("eagle"));
 
         // Refresh shop after passive income changes
         createShopItems();
@@ -199,13 +199,13 @@ function updateStats(){
     const eagleDisplay = document.getElementById('eagle-count');
     const eagle = shopItems.find((i) => i.name === "Bald Eagle");
     if(eagleDisplay && eagle && eagle.amount){
-        eagleDisplay.textContent = Math.round(eagle.amount);
+        eagleDisplay.textContent = Math.round(calculateValue("eagle"));
     }
     
     // Update click multiplier display
-    const multiplierDisplay = document.getElementById('click-multiplier');
-    if(multiplierDisplay){
-        multiplierDisplay.textContent = Math.round(calculateClickValue() * 10) / 10;
+    const clickValueDisplay = document.getElementById('click-value');
+    if(clickValueDisplay){
+        clickValueDisplay.textContent = Math.round(calculateValue("click") * 10) / 10;
     }
 
     // Update boost display
@@ -251,29 +251,43 @@ function lerp(a, b, t){
 function buttonClick(){
     console.log('Button clicked!');
 
-    let clickValue = calculateClickValue();
-    updateMoney(clickValue);
+    let value = calculateValue("click");
+    updateMoney(value);
 
     // Refresh shop so buttons reflect the new money total after clicking
     createShopItems();
 }
 
-function calculateClickValue(){
-    const multiplierItem = shopItems.find((i) => i.name === "American Flag");
-    const multiplierCount = (multiplierItem && multiplierItem.amount ? multiplierItem.amount : 0) + 1; // +1 for smoother growth (from 1 to 2 rather than 1, 1, 4)
-    
-    let clickValue = 1; // Base click value, can be modified by shop items
+function calculateValue(itemName){
     const switchTime = 20; // The amount of time before the function switches from quadratic to linear growth in click value.
     const linearMultiplier = 2; // The amount to scale the linear growth by after we switch
     const quadraticMultiplier = 0.75; // The amount to scale the quadratic growth by before we switch
 
-    const approvalMultiplier = (0.0001 * approval ** 2) + (0.005 * approval) + 0.5; // Maps approval to a value from 0.5 to 2 (0% -> 0.5x, 50% -> 1x, 100% -> 2x)
+    let value = 1
 
-    (multiplierCount > switchTime) ? clickValue = linearMultiplier * (multiplierCount - switchTime) + switchTime ** 2 : clickValue = quadraticMultiplier * multiplierCount ** 2; // Quadratic growth for a while, and then linear growth for balancing
+    switch(itemName.toLowerCase()){
+        case "click":
+            const multiplierItem = shopItems.find((i) => i.name === "American Flag");
+            const multiplierCount = (multiplierItem && multiplierItem.amount ? multiplierItem.amount : 0) + 1; // +1 for smoother growth (from 1 to 2 rather than 1, 1, 4)
 
-    clickValue = Math.max(1, Math.round(clickValue) * boost * approvalMultiplier); //Round click value to nearest integer for cleaner display
+            const approvalMultiplier = (0.0001 * approval ** 2) + (0.005 * approval) + 0.5; // Maps approval to a value from 0.5 to 2 (0% -> 0.5x, 50% -> 1x, 100% -> 2x)
 
-    return clickValue;
+            if(multiplierCount){
+                (multiplierCount > switchTime) ? value = linearMultiplier * (multiplierCount - switchTime) + switchTime ** 2 : value = quadraticMultiplier * multiplierCount ** 2; // Quadratic growth for a while, and then linear growth for balancing
+                value = Math.max(1, Math.round(value) * boost * approvalMultiplier); //Round click value to nearest integer for cleaner display
+
+                return value;
+            }
+        case "eagle":
+            const eagle = shopItems.find((i) => i.name === "Bald Eagle");
+
+            if(eagle && eagle.amount){
+                (eagle.amount > switchTime) ? value = linearMultiplier * (eagle.amount - switchTime) + switchTime ** 2 : value = quadraticMultiplier * eagle.amount ** 2; // Quadratic growth for a while, and then linear growth for balancing
+                value = Math.max(1, Math.round(value) * boost);
+
+                return value;
+            }
+    }
 }
 
 function updateMoney(change = 0){

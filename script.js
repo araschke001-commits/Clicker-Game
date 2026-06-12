@@ -72,9 +72,11 @@ function createShopItems(){
         const shopItem = document.createElement('div');
         shopItem.className = 'shop-item';
 
+        const warWins = item.amount - (warActive ? 1 : 0) - warLosses;
+
         shopItem.innerHTML = `
             <div>
-                <h3>${item.name} ${item.amount ? ((item.name == "War") ? `(${item.amount - warLosses} Wins, ${warLosses} Losses)` : `(${item.amount})`) : ''}</h3>
+                <h3>${item.name} ${item.amount ? ((item.name == "War") ? `(${warWins} Wins, ${warLosses} Losses)` : `(${item.amount})`) : ''}</h3>
                 <p>${item.description}</p>
             </div>
             <button onclick="buyItem('${item.name}')" ${(item.name === 'War' && warActive) || money < item.cost ? 'disabled' : ''}>

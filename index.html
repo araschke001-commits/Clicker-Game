@@ -11,16 +11,35 @@
     <main class="game-layout">
       <div class="header">
         <h1>America Clicker</h1>
-        <p id="money-display">Money: $<span id="click-count">0</span></p>
       </div>
       
       <aside class="stats-panel">
+        <div class="money-display">
+          <p>Money:</p>
+          <p>$<span id="money-count">0</span></p>
+        </div>
+
         <div class="approval-rating">
           <p>Approval Rating:</p>
           <div class="approval-bar-container">
-            <div id="approval-bar"></div>
-            <p><span id="approval-percentage">50</span>%</p>
-          </div>
+              <div id="approval-bar"></div>
+              <p id="approval-percentage">50%</p>
+            </div>
+        </div>
+
+        <div class="eagle-display">
+          <p>Eagle Count:</p>
+          <p><span id="eagle-count">0</span> Eagles</p>
+        </div>
+
+        <div class="click-multiplier-display">
+          <p>Click Multiplier:</p>
+          <p id="click-multiplier">1</p>
+        </div>
+
+        <div class="boost-display">
+          <p>Boost:</p>
+          <p><span id="boost-multiply">1</span>x</p>
         </div>
       </aside>
 

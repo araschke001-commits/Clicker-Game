@@ -1,5 +1,5 @@
 const button = document.getElementById('click-button');
-const count = document.getElementById('click-count');
+const count = document.getElementById('money-count');
 
 const shopItems = [
     {
@@ -24,7 +24,7 @@ const shopItems = [
         cost: 50,
         startCost: 50,
         amount: 0,
-        exponent: 0.5
+        exponent: 1
     },
     {
         name: "War",
@@ -129,7 +129,7 @@ function buyItem(itemName){
         // Increase the cost of the item each time you buy it
         item.cost = Math.round(item.startCost + item.startCost * amount ** item.exponent);
         createShopItems(); // Redraw the shop with new prices
-        updateApprovalBar(); // Update approval bar in case we bought something that affects it
+        updateStats(); // Update stats panel in case we bought something that affects it
 
         console.log(`Bought ${item.name}!`);
     } else {
@@ -190,6 +190,32 @@ setInterval(() => {
     updateApprovalBar((warActive == true) ? -0.5 : -0.25);
 }, 1000);
 
+// Updates all of the stats panel
+function updateStats(){
+    updateMoney();
+    updateApprovalBar();
+
+    // Update eagle display
+    const eagleDisplay = document.getElementById('eagle-count');
+    const eagle = shopItems.find((i) => i.name === "Bald Eagle");
+    if(eagle && eagle.amount){
+        eagleDisplay.textContent = eagle.amount;
+    }
+
+    // Update click multiplier display
+    const multiplierDisplay = document.getElementById('click-multiplier');
+    const clickMultiplier = shopItems.find((i) => i.name === "American Flag");
+    if(clickMultiplier && clickMultiplier.amount){
+        multiplierDisplay.textContent = clickMultiplier.amount;
+    }
+
+    // Update boost display
+    const boostDisplay = document.getElementById('boost-multiply');
+    if(boost){
+        boostDisplay.textContent = boost;
+    }
+}
+
 // Update the approval bar based on current shop items
 function updateApprovalBar(change = 0){
     const bar = document.getElementById('approval-bar');
@@ -214,7 +240,7 @@ function updateApprovalBar(change = 0){
 
     bar.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
 
-    percent.textContent = Math.round(approval);
+    percent.textContent = `${Math.round(approval)}%`;
 }
 
 // Helper: linear interpolation
@@ -232,9 +258,9 @@ function buttonClick(){
     let clickValue = 1; // Base click value, can be modified by shop items
     const switchTime = 20; // The amount of time before the function switches from quadratic to linear growth in click value.
     const linearMultiplier = 2; // The amount to scale the linear growth by after we switch
-    const quadraticMultiplier = 0.5; // The amount to scale the quadratic growth by before we switch
+    const quadraticMultiplier = 0.75; // The amount to scale the quadratic growth by before we switch
 
-    (multiplierCount > switchTime) ? clickValue = linearMultiplier * (multiplierCount - switchTime) + switchTime ** 2 : clickValue = quadraticMultiplier * Math.pow(multiplierCount, 2); // Quadratic growth for a while, and then linear growth for balancing
+    (multiplierCount > switchTime) ? clickValue = linearMultiplier * (multiplierCount - switchTime) + switchTime ** 2 : clickValue = quadraticMultiplier * multiplierCount ** 2; // Quadratic growth for a while, and then linear growth for balancing
 
     clickValue = Math.max(1, Math.round(clickValue) * boost); //Round click value to nearest integer for cleaner display
 

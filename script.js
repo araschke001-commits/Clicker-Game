@@ -198,20 +198,19 @@ function updateStats(){
     // Update eagle display
     const eagleDisplay = document.getElementById('eagle-count');
     const eagle = shopItems.find((i) => i.name === "Bald Eagle");
-    if(eagle && eagle.amount){
+    if(eagleDisplay && eagle && eagle.amount){
         eagleDisplay.textContent = eagle.amount;
     }
 
     // Update click multiplier display
     const multiplierDisplay = document.getElementById('click-multiplier');
-    const clickMultiplier = shopItems.find((i) => i.name === "American Flag");
-    if(clickMultiplier && clickMultiplier.amount){
-        multiplierDisplay.textContent = clickMultiplier.amount;
+    if(multiplierDisplay){
+        multiplierDisplay.textContent = calculateClickValue();
     }
 
     // Update boost display
     const boostDisplay = document.getElementById('boost-multiply');
-    if(boost){
+    if(boostDisplay && boost){
         boostDisplay.textContent = boost;
     }
 }
@@ -252,8 +251,16 @@ function lerp(a, b, t){
 function buttonClick(){
     console.log('Button clicked!');
 
+    let clickValue = calculateClickValue();
+    updateMoney(clickValue);
+
+    // Refresh shop so buttons reflect the new money total after clicking
+    createShopItems();
+}
+
+function calculateClickValue(){
     const multiplierItem = shopItems.find((i) => i.name === "American Flag");
-    const multiplierCount = (multiplierItem ? multiplierItem.amount : 0) + 1; // +1 for smoother growth (from 1 to 2 rather than 1, 1, 4)
+    const multiplierCount = (multiplierItem && multiplierItem.amount ? multiplierItem.amount : 0) + 1; // +1 for smoother growth (from 1 to 2 rather than 1, 1, 4)
     
     let clickValue = 1; // Base click value, can be modified by shop items
     const switchTime = 20; // The amount of time before the function switches from quadratic to linear growth in click value.
@@ -264,10 +271,7 @@ function buttonClick(){
 
     clickValue = Math.max(1, Math.round(clickValue) * boost); //Round click value to nearest integer for cleaner display
 
-    updateMoney(clickValue);
-
-    // Refresh shop so buttons reflect the new money total after clicking
-    createShopItems();
+    return clickValue;
 }
 
 function updateMoney(change = 0){

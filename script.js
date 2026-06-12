@@ -4,11 +4,11 @@ const count = document.getElementById('money-count');
 const shopItems = [
     {
         name: "Bald Eagle",
-        description: "Birds that give you money every second.",
+        description: "Birds that give you money every second. (Each purchase doubles the amount of eagles you have)",
         cost: 10,
         startCost: 10,
         amount: 0,
-        exponent: 1
+        exponent: 1.5
     },
     {
         name: "American Flag",
@@ -180,7 +180,7 @@ setInterval(() => {
     // For every eagle we own, we need to click the button
     const eagle = shopItems.find((i) => i.name === "Bald Eagle");
     if(eagle && eagle.amount){
-        updateMoney(eagle.amount * boost);
+        updateMoney(eagle.amount ** 2 * boost);
 
         // Refresh shop after passive income changes
         createShopItems();

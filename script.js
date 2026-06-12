@@ -28,7 +28,7 @@ const shopItems = [
     },
     {
         name: "War",
-        description: "Engage in a war, has a 50% chance of doubling your money and increasing your approval rating upon win but halves your approval rating and money upon loss.",
+        description: "Engage in a war, has a 50% chance of doubling your money and increasing your approval rating upon win but halves your money and decreases your approval rating upon loss.",
         cost: 200,
         startCost: 200,
         amount: 0,
@@ -74,7 +74,7 @@ function createShopItems(){
 
         shopItem.innerHTML = `
             <div>
-                <h3>${item.name} ${item.amount ? `(${item.amount})` : ''}</h3>
+                <h3>${item.name} ${item.amount ? ((item.name == "war") ? `(${item.amount - warLosses} Wins, ${warLosses} Losses)` : `(${item.amount})`) : ''}</h3>
                 <p>${item.description}</p>
             </div>
             <button onclick="buyItem('${item.name}')" ${(item.name === 'War' && warActive) || money < item.cost ? 'disabled' : ''}>
@@ -197,9 +197,12 @@ function updateStats(){
 
     // Update eagle display
     const eagleDisplay = document.getElementById('eagle-count');
+    const eagleLabel = document.getElementById('eagle-label');
     const eagle = shopItems.find((i) => i.name === "Bald Eagle");
     if(eagleDisplay && eagle && eagle.amount){
-        eagleDisplay.textContent = Math.round(calculateValue("eagle"));
+        const eagleCount = Math.round(calculateValue("eagle"));
+        eagleDisplay.textContent = eagleCount;
+        eagleLabel.textContent = (eagleCount == 1) ? ' Eagle' : ' Eagles';
     }
     
     // Update click multiplier display

@@ -199,7 +199,7 @@ function updateStats(){
     const eagleDisplay = document.getElementById('eagle-count');
     const eagle = shopItems.find((i) => i.name === "Bald Eagle");
     if(eagleDisplay && eagle && eagle.amount){
-        eagleDisplay.textContent = eagle.amount;
+        eagleDisplay.textContent = Math.round(eagle.amount);
     }
     
     // Update click multiplier display

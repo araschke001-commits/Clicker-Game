@@ -267,9 +267,11 @@ function calculateClickValue(){
     const linearMultiplier = 2; // The amount to scale the linear growth by after we switch
     const quadraticMultiplier = 0.75; // The amount to scale the quadratic growth by before we switch
 
+    const approvalMultiplier = ((approval * 1.5) + 50) / 100; // Maps approval to a value from 0.5 to 2
+    
     (multiplierCount > switchTime) ? clickValue = linearMultiplier * (multiplierCount - switchTime) + switchTime ** 2 : clickValue = quadraticMultiplier * multiplierCount ** 2; // Quadratic growth for a while, and then linear growth for balancing
 
-    clickValue = Math.max(1, Math.round(clickValue) * boost); //Round click value to nearest integer for cleaner display
+    clickValue = Math.max(1, Math.round(clickValue) * boost * approvalMultiplier); //Round click value to nearest integer for cleaner display
 
     return clickValue;
 }

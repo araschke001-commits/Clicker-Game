@@ -8,23 +8,12 @@
     align-items: start;
 
 
-    .header{
-        text-align: center;
-        margin: 0;
-        grid-column: 1 / -1;
-        
-        .money-display{
-            font-size: 1.2em;
-            color: black;
-        }
-    }
-    
-
     .stats-panel{
         background-color: rgba(255, 255, 255, 0.4);
         color: black;
         font-size: 1.2em;
         border-radius: 10px;
+        gap: 5px;
         padding: 0px;
 
         .approval-bar-container{
@@ -74,6 +63,17 @@
     .game-area{
         text-align: center;
     
+        .header{
+            text-align: center;
+            margin: 0;
+            grid-column: 1 / -1;
+            
+            .money-display{
+                font-size: 1.2em;
+                color: black;
+            }
+        }
+
         #click-button{
             width: 400px;
             height: 300px;

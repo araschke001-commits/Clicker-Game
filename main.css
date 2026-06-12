@@ -16,6 +16,11 @@
         gap: 0px;
         padding: 0px;
 
+        .stats-panel p{
+            margin: 0;
+            line-height: 1.2;
+        }
+
         .approval-bar-container{
             position: relative;
             width: 100px;
@@ -48,15 +53,15 @@
         }
 
         .eagle-display{
-            margin-top: 50px;
+            margin-top: 10px;
         }
 
         .click-multiplier-display{
-            margin-top: 50px;
+            margin-top: 10px;
         }
 
         .boost-display{
-            margin-top: 50px;
+            margin-top: 10px;
         }
     }
 

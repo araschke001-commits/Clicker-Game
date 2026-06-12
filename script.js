@@ -201,17 +201,17 @@ function updateStats(){
     if(eagleDisplay && eagle && eagle.amount){
         eagleDisplay.textContent = eagle.amount;
     }
-
+    
     // Update click multiplier display
     const multiplierDisplay = document.getElementById('click-multiplier');
     if(multiplierDisplay){
-        multiplierDisplay.textContent = calculateClickValue();
+        multiplierDisplay.textContent = Math.round(calculateClickValue() * 10) / 10;
     }
 
     // Update boost display
     const boostDisplay = document.getElementById('boost-multiply');
     if(boostDisplay && boost){
-        boostDisplay.textContent = boost;
+        boostDisplay.textContent = Math.round(boost * 10) / 10;
     }
 }
 
